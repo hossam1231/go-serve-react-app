@@ -1,22 +1,30 @@
 package main
 
 import (
+	"embed"
 	"errors"
 	"fmt"
 	"io/fs"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
 )
 
+//go:embed web/dist
+var assetsFS embed.FS
+
 func main() {
 	router := chi.NewRouter()
 
+	subFS, err := fs.Sub(assetsFS, "web/dist")
+	if err != nil {
+		log.Fatalf("failed to create sub file system: %v", err)
+	}
+
 	router.Get("/api/increment/{by}", incrementHandler())
-	router.Handle("/*", http.FileServerFS(FallbackFS{os.DirFS("web/dist")}))
+	router.Handle("/*", http.FileServerFS(FallbackFS{subFS}))
 
 	log.Fatal(http.ListenAndServe(":3000", router))
 }
