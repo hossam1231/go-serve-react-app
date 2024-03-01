@@ -1,0 +1,110 @@
+# GraphQL schema example
+# This schema defines the structure of the data that can be queried and mutated using GraphQL.
+# It's used by gqlgen to generate corresponding Go code.
+# https://gqlgen.com/getting-started/
+
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String
+}
+
+# The Todo type represents a single task. It has an ID, text, done status, and a user who created it.
+# In GraphQL, the exclamation mark (!) is used to indicate that a field is non-nullable. When you see ID!, String!, or Boolean!, it means that the corresponding field must always have a non-null value when queried.
+
+type Video {
+  id: ID!
+  title: String!
+  date: String!
+}
+
+type Event {
+  id: ID!
+  title: String!
+  date: String!
+}
+
+type Comment {
+  id: ID!
+  title: String!
+  userId: String
+  user: User
+  comment: String!
+  parentCommentId: Int
+  parentComment: Comment
+  likes: Int
+  createdAt: String!
+}
+
+type Category {
+  id: ID!
+  title: String!
+  userId: String
+  user: User
+  comment: String!
+  parentCommentId: Int
+  parentComment: Comment
+  likes: Int
+  createdAt: String!
+}
+
+type Article {
+  id: ID!
+  title: String!
+  relationId: String
+  relationName: String
+  description: String
+  content: String
+  establishmentId: String
+  establishment: Establishment
+  publicEstablishmentId: String
+  publishedAt: String
+  userId: String
+  user: User
+  likes: Int
+  attachments: JSON
+  allowComments: Boolean
+  comments: [Comment]
+  showAuthor: Boolean
+  showDate: Boolean
+  showLikes: Boolean
+  thumbnail: String
+  createdAt: String!
+  updatedAt: String!
+  deletedAt: String
+  commentKey: String
+  categoryIds: JSON
+  categories: [Category]
+}
+
+# The Todo type represents a single task. It has an ID, text, done status, and a user who created it.
+# In GraphQL, the exclamation mark (!) is used to indicate that a field is non-nullable. When you see ID!, String!, or Boolean!, it means that the corresponding field must always have a non-null value when queried.
+type Establishment {
+  id: ID!
+  publicId: String!
+  name: String!
+  userId: String!
+  type: String!
+  thumbnail: String
+  dbId: String!
+  latitude: Float
+  longitude: Float
+  events: [Event]
+  articles: [Article]
+}
+
+# Custom scalar for JSON data
+scalar JSON
+
+# The Query type defines the operations that can be performed to retrieve data.
+type Query {
+  establishment(id: ID!): Establishment
+  article(id: ID!, dbId: String, previous: Int): Article
+  establishments(latitude: Float, longitude: Float, rangeInKM: Float, type: String, city: String, limit: Int): [Establishment]
+}
+
+# # The Mutation type defines the operations that can be performed to modify data.
+# type Mutation {
+
+# }
